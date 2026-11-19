@@ -6,11 +6,11 @@ android {
     namespace = "com.hossein.jarvisfa"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.hossein.jarvisfa"
+        applicationId = "com.hossein.jarvisfa.fresh"
         minSdk = 23
         targetSdk = 32
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
