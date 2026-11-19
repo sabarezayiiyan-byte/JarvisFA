@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071426"><meta name="description" content="دستیار فارسی جارویس">
+<link rel="manifest" href="manifest.webmanifest"><title>جارویس</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#123b62,#071426 58%,#030914);font-family:Tahoma,Arial,sans-serif;color:#eaf7ff;display:flex;justify-content:center}.app{width:min(100%,520px);padding:26px 20px 34px;text-align:center}.top{display:flex;justify-content:space-between;color:#8fc9e9;font-size:13px}.orb{width:178px;height:178px;margin:34px auto 20px;border-radius:50%;border:2px solid #48c9ff;box-shadow:0 0 24px #139fe8, inset 0 0 30px #147eb7;display:grid;place-items:center;background:radial-gradient(circle,#164d75,#071426 68%);font-size:42px;font-weight:bold;color:#9ee7ff}.orb.listening{animation:pulse 1s infinite}@keyframes pulse{50%{box-shadow:0 0 48px #28c6ff,inset 0 0 45px #147eb7;transform:scale(1.04)}}h1{font-size:30px;margin:8px 0}.sub{color:#91b7ce;font-size:14px}.status{margin:20px auto;padding:14px;border:1px solid #1e5275;border-radius:14px;background:#081c30;min-height:52px;line-height:1.8}.mic{border:0;border-radius:50px;padding:17px 34px;background:linear-gradient(90deg,#087fbd,#16b9d6);color:white;font-size:17px;font-weight:bold;margin:12px;box-shadow:0 8px 25px #0079a855}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}.tile{background:#0c2740;border:1px solid #1e5275;border-radius:15px;padding:17px 6px;color:#eaf7ff;font-size:14px}.tile span{display:block;font-size:25px;margin-bottom:8px}.hint{font-size:12px;color:#82a9c1;line-height:2;margin-top:22px}.file{display:none}audio{width:100%;margin-top:16px}
+</style></head><body><main class="app">
+<div class="top"><span>JARVIS • نسخه وب</span><span id="battery">باتری: --</span></div>
+<div class="orb" id="orb">J</div><h1>جارویس</h1><div class="sub">دستیار فارسی هوشمند</div>
+<div class="status" id="status">برای شروع، دکمه میکروفون را بزن و صحبت کن.</div>
+<button class="mic" id="listen">🎙️ صحبت با جارویس</button>
+<div class="grid">
+<button class="tile" id="call"><span>📞</span>تماس</button>
+<button class="tile" id="sms"><span>💬</span>پیامک</button>
+<button class="tile" id="music"><span>🎵</span>انتخاب آهنگ</button>
+</div>
+<input class="file" id="audiofile" type="file" accept="audio/*"><audio id="player" controls hidden></audio>
+<div class="hint">فرمان‌ها: «سلام»، «ساعت چنده؟»، «باتری چقدره؟»، «به مامان زنگ بزن»، «پیامک»، «آهنگ»<br>برای تماس و پیام، جارویس صفحهٔ مربوط را باز می‌کند تا خودت تأیید کنی.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id), status=$('status');
+function say(t){status.textContent=t;if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fa-IR';u.rate=.92;speechSynthesis.speak(u)}}
+function handle(raw){const t=raw.toLowerCase();if(t.includes('سلام'))say('سلام! من جارویس هستم. چه کاری انجام بدهم؟');else if(t.includes('ساعت'))say('ساعت الان '+new Date().toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+' است.');else if(t.includes('باتری')){if(navigator.getBattery)navigator.getBattery().then(b=>say('شارژ باتری '+Math.round(b.level*100)+' درصد است.'));else say('اطلاعات باتری در این مرورگر در دسترس نیست.')}else if(t.includes('زنگ')||t.includes('تماس')){say('صفحه تماس باز می‌شود. شماره را انتخاب کن و خودت تماس را تأیید کن.');location.href='tel:'}else if(t.includes('پیامک')||t.includes('پیام بده')){say('برنامه پیامک باز می‌شود. متن و گیرنده را خودت بررسی کن.');location.href='sms:'}else if(t.includes('آهنگ')||t.includes('موسیقی')){$('audiofile').click();say('یک آهنگ از حافظه گوشی انتخاب کن.')}else say('این فرمان را هنوز یاد نگرفته‌ام.');}
+$('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){say('تشخیص گفتار در این مرورگر پشتیبانی نمی‌شود. از دکمه‌های پایین استفاده کن.');return}const r=new SR();r.lang='fa-IR';r.interimResults=false;r.maxAlternatives=1;$('orb').classList.add('listening');status.textContent='دارم گوش می‌دهم...';r.onresult=e=>{const q=e.results[0][0].transcript;status.textContent='شنیدم: '+q;handle(q)};r.onerror=()=>say('صدای شما دریافت نشد. دوباره تلاش کن.');r.onend=()=>$('orb').classList.remove('listening');r.start()};
+$('call').onclick=()=>location.href='tel:';$('sms').onclick=()=>location.href='sms:';$('music').onclick=()=>$('audiofile').click();
+$('audiofile').onchange=e=>{const f=e.target.files[0];if(f){const p=$('player');p.src=URL.createObjectURL(f);p.hidden=false;p.play();say('آهنگ انتخاب شد.')}};
+if(navigator.getBattery)navigator.getBattery().then(b=>{const up=()=> $('battery').textContent='باتری: '+Math.round(b.level*100)+'٪';up();b.addEventListener('levelchange',up)}).catch(()=>{});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>
