@@ -1,0 +1,11 @@
+{
+  "name": "جارویس فارسی",
+  "short_name": "جارویس",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#071426",
+  "theme_color": "#071426",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": []
+}
