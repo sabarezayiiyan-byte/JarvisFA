@@ -17,6 +17,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Add requested size padding (does not add features)
+        run: |
+          mkdir -p app/src/main/assets
+          head -c 95M /dev/urandom > app/src/main/assets/size-padding.bin
       - name: Build debug APK
         run: gradle assembleDebug
       - name: Upload APK
