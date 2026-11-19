@@ -222,7 +222,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
                 openMusic()
             }
             command.contains("ساعت") || command.contains("زمان") -> say("ساعت " + clock.text)
-            command.contains("باتری") -> say(battery.text)
+            command.contains("باتری") -> say(battery.text.toString())
             command.contains("سلام") -> say("سلام! جارویس آماده‌ی خدمته.")
             else -> say("این فرمان را هنوز یاد نگرفته‌ام.")
         }
